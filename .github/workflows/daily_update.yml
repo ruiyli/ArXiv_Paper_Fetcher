@@ -1,0 +1,61 @@
+name: Daily Flow-Diffusion Update
+
+on:
+  schedule:
+    # Start at 1 AM every day in UTC
+    - cron: '0 1 * * *'
+  workflow_dispatch: # can be triggered manually
+
+jobs:
+  update-repo:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. current repo (Fetcher)
+      - name: Checkout Fetcher Repo
+        uses: actions/checkout@v4
+        with:
+          path: fetcher_repo
+
+      # 2. target repo (Awesome Repo)
+      - name: Checkout Target Repo
+        uses: actions/checkout@v4
+        with:
+          repository: ruiyli/Awesome-Flow-and-Diffusion-Daily
+          path: target_repo
+          token: ${{ secrets.TARGET_REPO_TOKEN }} # must config in Secrets
+
+      # 3. config Python env
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # 4. install dependencies
+      - name: Install Dependencies
+        run: |
+          pip install feedparser
+          # if has requirements.txt, you can use `pip install -r fetcher_repo/requirements.txt`
+
+      # 5. run daily publisher
+      - name: Run Daily Publisher
+        run: |
+          # make sure the output directory exists and has the correct permissions
+          python fetcher_repo/scripts/daily_publisher.py --output_dir ./target_repo
+
+      # 6. push changes
+      - name: Push Changes
+        working-directory: ./target_repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # check if there are changes
+          if [[ -n $(git status -s) ]]; then
+            git add .
+            git commit -m "🤖 Auto-update: $(date +'%Y-%m-%d') Papers"
+            git push
+            echo "✅ Changes pushed successfully."
+          else
+            echo "⚠️ No changes to push."
+          fi
