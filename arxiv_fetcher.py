@@ -119,8 +119,13 @@ def fetch_papers_by_keywords(keywords, start_date, end_date, max_results=1000):
     # Build keyword query - search in title and abstract
     keyword_query = '+OR+'.join([f'ti:{urllib.parse.quote(kw)}+OR+abs:{urllib.parse.quote(kw)}' for kw in keywords])
     
-    # Build combined query: (keyword query) AND (category query)
-    combined_query = f'({keyword_query})+AND+({category_query})'
+    # Build date range query for ArXiv API
+    start_dt = start_date.replace('-', '')
+    end_dt = end_date.replace('-', '')
+    date_query = f'submittedDate:[{start_dt}0000+TO+{end_dt}2359]'
+
+    # Build combined query: (keyword query) AND (category query) AND (date query)
+    combined_query = f'({keyword_query})+AND+({category_query})+AND+{date_query}'
     
     print(f"Searching keywords: {', '.join(keywords)}")
     print(f"Search fields: Mathematics, Computer Science, Statistics")
