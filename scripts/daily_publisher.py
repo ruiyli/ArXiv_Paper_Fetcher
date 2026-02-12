@@ -125,7 +125,7 @@ def main():
     start_date_str = yesterday.strftime("%Y-%m-%d")
     end_date_str = today.strftime("%Y-%m-%d")
     
-    keywords = ["Flow Matching", "Diffusion Model", "Score-based Generative Model"]
+    keywords = ["Flow", "Diffusion", "Score-based", "Diffusion Models", "Flow Matching", "Normalizing Flows"]
     
     print(f"🚀 Fetching papers for {start_date_str} to {end_date_str}...")
     
