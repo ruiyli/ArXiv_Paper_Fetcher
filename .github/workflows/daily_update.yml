@@ -47,13 +47,13 @@ jobs:
       - name: Push Changes
         working-directory: ./target_repo
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "ruiyli"
+          git config user.email "ruiyuli1024@gmail.com "
           
           # check if there are changes
           if [[ -n $(git status -s) ]]; then
             git add .
-            git commit -m "🤖 Auto-update: $(date +'%Y-%m-%d') Papers"
+            git commit -m "🔥 Awesome Update: $(date +'%Y-%m-%d') Papers"
             git push
             echo "✅ Changes pushed successfully."
           else
